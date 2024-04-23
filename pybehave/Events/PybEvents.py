@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import multiprocessing
-from multiprocessing.connection import PipeConnection
+from multiprocessing.connection import Connection
 from typing import Dict, Any
 
 import msgspec
@@ -44,7 +44,7 @@ def enc_hook(obj: Any) -> Any:
     if isinstance(obj, np.ndarray):
         return msgspec.msgpack.Ext(1, numpy_array_encoder.encode(
             NumpySerializedRepresentation(dtype=obj.dtype.str, shape=obj.shape, data=obj.data)))
-    elif isinstance(obj, PipeConnection):
+    elif isinstance(obj, Connection):
         # Pickle the connection
         return multiprocessing.context.reduction.ForkingPickler.dumps(obj)
     else:
@@ -54,7 +54,7 @@ def enc_hook(obj: Any) -> Any:
 
 def dec_hook(typ: typing.Type, obj: Any) -> Any:
     # `type` here is the value of the custom type annotation being decoded.
-    if typ is PipeConnection:
+    if typ is Connection:
         # Convert ``obj`` (which should be a ``tuple``) to a complex
         return multiprocessing.context.reduction.ForkingPickler.loads(obj)
     else:
@@ -91,7 +91,7 @@ class UnavailableSourceEvent(PybEvent):
 
 class AddSourceEvent(PybEvent):
     sid: str
-    conn: PipeConnection
+    conn: Connection
 
 
 class RemoveSourceEvent(PybEvent):
