@@ -6,7 +6,7 @@ def pybehave():
     import os
 
     p = psutil.Process(os.getpid())
-    p.nice(psutil.REALTIME_PRIORITY_CLASS)
+    p.nice(10)
 
     faulthandler.enable()
     multiprocessing.allow_connection_pickling()

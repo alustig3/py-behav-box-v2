@@ -42,7 +42,7 @@ class TaskProcess(Process):
 
     def run(self):
         p = psutil.Process(os.getpid())
-        p.nice(psutil.REALTIME_PRIORITY_CLASS)
+        p.nice(10)
         self.tm = TimeoutManager()
         self.tm.start()
         self.tp_q = collections.deque()
